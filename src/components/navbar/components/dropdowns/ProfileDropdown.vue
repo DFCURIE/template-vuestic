@@ -3,14 +3,13 @@
     <VaDropdown v-model="isShown" :offset="[9, 0]" class="profile-dropdown" stick-to-edges>
       <template #anchor>
         <VaButton preset="secondary" color="textPrimary">
-  <span class="profile-dropdown__anchor min-w-max">
-    <slot />
-    <VaAvatar :size="27" color="blue">
-      <span class="ellipsis">...</span>
-    </VaAvatar>
-  </span>
-</VaButton>
-
+          <span class="profile-dropdown__anchor min-w-max">
+            <slot />
+            <VaAvatar :size="27" color="blue">
+              <span class="ellipsis">...</span>
+            </VaAvatar>
+          </span>
+        </VaButton>
       </template>
       <VaDropdownContent
         class="profile-dropdown__content md:w-60 px-0 py-4 w-full"
@@ -94,7 +93,7 @@ withDefaults(
         list: [
           {
             name: 'logout',
-            to: 'login',
+            to: 'logout',
             icon: 'mso-logout',
           },
         ],

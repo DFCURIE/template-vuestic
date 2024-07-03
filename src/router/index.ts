@@ -50,6 +50,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/auth/Login.vue'),
       },
       {
+        name: 'logout', // Tambahkan rute logout
+        path: 'logout',
+        component: () => import('../pages/auth/Logout.vue'),
+      },
+      {
         name: 'recover-password-email',
         path: 'recover-password-email',
         component: () => import('../pages/auth/CheckTheEmail.vue'),
