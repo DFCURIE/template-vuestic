@@ -3,7 +3,6 @@
     <h1 class="font-semibold text-4xl mb-4">Log in</h1>
     <p class="text-base mb-4 leading-5">
       Admin Console Optiflow
-      <!-- <RouterLink :to="{ name: 'signup' }" class="font-semibold text-primary">Sign up</RouterLink> -->
     </p>
     <VaInput
       v-model="formData.email"
@@ -31,13 +30,6 @@
       </VaInput>
     </VaValue>
 
-    <!-- <div class="auth-layout__options flex flex-col sm:flex-row items-start sm:items-center justify-between">
-      <VaCheckbox v-model="formData.keepLoggedIn" class="mb-2 sm:mb-0" label="Keep me signed in on this device" />
-      <RouterLink :to="{ name: 'recover-password' }" class="mt-2 sm:mt-0 sm:ml-1 font-semibold text-primary">
-        Forgot password?
-      </RouterLink>
-    </div> -->
-
     <div class="flex justify-center mt-4">
       <VaButton class="w-full" @click="submit"> Login</VaButton>
     </div>
@@ -49,10 +41,13 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
+import { login, logout } from '../../services/api'
+import { useUserStore } from '../../stores/user-store' // Gunakan jalur relatif
 
 const { validate } = useForm('form')
-const { push } = useRouter()
-const { init } = useToast()
+const router = useRouter()
+const toast = useToast()
+const userStore = useUserStore()
 
 const formData = reactive({
   email: '',
@@ -60,10 +55,27 @@ const formData = reactive({
   keepLoggedIn: false,
 })
 
-const submit = () => {
+const submit = async () => {
   if (validate()) {
-    init({ message: "You've successfully logged in", color: 'success' })
-    push({ name: 'dashboard' })
+    try {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        // Try to logout first
+        await logout(formData.email, formData.password);
+        localStorage.removeItem('token');
+      }
+      const response = await login(formData.email, formData.password);
+      if (response.status === 200) {
+        localStorage.setItem('token', response.data.token);
+        userStore.setUser(formData.email, formData.password)
+        toast.init({ message: "You've successfully logged in", color: 'success' });
+        router.push({ name: 'dashboard' }); // Redirect ke halaman dashboard
+      } else {
+        toast.init({ message: response.message, color: 'danger' });
+      }
+    } catch (error) {
+      toast.init({ message: 'Login failed. Please try again.', color: 'danger' });
+    }
   }
 }
 </script>
