@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import { Project } from '../../../projects/types'
-import UserAvatar from '../../../users/widgets/UserAvatar.vue'
 import ProjectStatusBadge from '../../../projects/components/ProjectStatusBadge.vue'
 import { useProjects } from '../../../projects/composables/useProjects'
 import { Pagination } from '../../../../data/pages/projects'

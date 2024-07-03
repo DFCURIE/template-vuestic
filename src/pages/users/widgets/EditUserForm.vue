@@ -2,8 +2,6 @@
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
 import { User, UserRole } from '../types'
-import UserAvatar from './UserAvatar.vue'
-import { useProjects } from '../../projects/composables/useProjects'
 import { validators } from '../../../services/utils'
 
 const props = defineProps({
@@ -85,30 +83,10 @@ const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
   { text: 'User', value: 'user' },
   { text: 'Owner', value: 'owner' },
 ]
-
-const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
 </script>
 
 <template>
   <VaForm v-slot="{ isValid }" ref="add-user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
-    <VaFileUpload
-      v-model="avatar"
-      type="single"
-      hide-file-list
-      class="self-stretch justify-start items-center gap-4 inline-flex"
-    >
-      <UserAvatar :user="newUser" size="large" />
-      <VaButton preset="primary" size="small">Add image</VaButton>
-      <VaButton
-        v-if="avatar"
-        preset="primary"
-        color="danger"
-        size="small"
-        icon="delete"
-        class="z-10"
-        @click.stop="avatar = undefined"
-      />
-    </VaFileUpload>
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
@@ -133,18 +111,6 @@ const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, tot
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.email]"
           name="email"
-        />
-        <VaSelect
-          v-model="newUser.projects"
-          label="Projects"
-          class="w-full sm:w-1/2"
-          :options="projects"
-          :rules="[validators.required]"
-          name="projects"
-          text-by="project_name"
-          track-by="id"
-          multiple
-          :max-visible-options="2"
         />
       </div>
 

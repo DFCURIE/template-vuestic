@@ -4,7 +4,6 @@ import { EmptyProject, Project } from '../types'
 import { SelectOption } from 'vuestic-ui'
 import { useUsers } from '../../users/composables/useUsers'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
 
 const props = defineProps<{
   project: Project | null

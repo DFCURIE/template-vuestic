@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { defineVaDataTableColumns, useModal } from 'vuestic-ui'
 import { User, UserRole } from '../types'
-import UserAvatar from './UserAvatar.vue'
 import { PropType, computed, toRef } from 'vue'
 import { Pagination, Sorting } from '../../../data/pages/users'
 import { useVModel } from '@vueuse/core'
-import { Project } from '../../projects/types'
 
 const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'fullname', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
   { label: 'Username', key: 'username', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
-  { label: 'Projects', key: 'projects', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
@@ -62,23 +59,6 @@ const onUserDelete = async (user: User) => {
     emit('delete-user', user)
   }
 }
-
-const formatProjectNames = (projects: Project[]) => {
-  if (projects.length === 0) return 'No projects'
-  if (projects.length <= 2) {
-    return projects.map((project) => project.project_name).join(', ')
-  }
-
-  return (
-    projects
-      .slice(0, 2)
-      .map((project) => project.project_name)
-      .join(', ') +
-    ' + ' +
-    (projects.length - 2) +
-    ' more'
-  )
-}
 </script>
 
 <template>
@@ -91,7 +71,7 @@ const formatProjectNames = (projects: Project[]) => {
   >
     <template #cell(fullname)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
-        <UserAvatar :user="rowData as User" size="small" />
+        <!-- Hapus referensi ke UserAvatar -->
         {{ rowData.fullname }}
       </div>
     </template>
@@ -110,12 +90,6 @@ const formatProjectNames = (projects: Project[]) => {
 
     <template #cell(role)="{ rowData }">
       <VaBadge :text="rowData.role" :color="roleColors[rowData.role as UserRole]" />
-    </template>
-
-    <template #cell(projects)="{ rowData }">
-      <div class="ellipsis max-w-[300px] lg:max-w-[450px]">
-        {{ formatProjectNames(rowData.projects) }}
-      </div>
     </template>
 
     <template #cell(actions)="{ rowData }">

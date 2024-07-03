@@ -32,7 +32,7 @@ const onUserSaved = async (user: User) => {
       color: 'success',
     })
   } else {
-    usersApi.add(user)
+    await usersApi.add(user)
     notify({
       message: `${user.fullname} has been created`,
       color: 'success',
@@ -99,8 +99,8 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
         :users="users"
         :loading="isLoading"
         :pagination="pagination"
-        @editUser="showEditUserModal"
-        @deleteUser="onUserDelete"
+        @edit-user="showEditUserModal"
+        @delete-user="onUserDelete"
       />
     </VaCardContent>
   </VaCard>
