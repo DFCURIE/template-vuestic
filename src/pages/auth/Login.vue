@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
 import { login, logout } from '../../services/api'
-import { useUserStore } from '../../stores/user-store' // Gunakan jalur relatif
+import { useUserStore } from '../../stores/user-store'
 
 const { validate } = useForm('form')
 const router = useRouter()
@@ -65,11 +65,11 @@ const submit = async () => {
         localStorage.removeItem('token');
       }
       const response = await login(formData.email, formData.password);
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         localStorage.setItem('token', response.data.token);
-        userStore.setUser(formData.email, formData.password)
+        userStore.setUser(formData.email, formData.password);
         toast.init({ message: "You've successfully logged in", color: 'success' });
-        router.push({ name: 'dashboard' }); // Redirect ke halaman dashboard
+        router.push({ name: 'dashboard' }); // Redirect to the dashboard
       } else {
         toast.init({ message: response.message, color: 'danger' });
       }

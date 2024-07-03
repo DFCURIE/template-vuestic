@@ -1,16 +1,16 @@
 import { Ref, ref, unref, watch } from 'vue'
-import { getUsers, updateUser, addUser, removeUser } from '../../../services/api'
+import { getUsers, updateUser, addUser, removeUser, type Filters, Pagination, Sorting } from '../../../data/pages/users'
 import { User } from '../types'
 import { watchIgnorable } from '@vueuse/core'
 
-const makePaginationRef = () => ref({ page: 1, perPage: 10, total: 0 })
-const makeSortingRef = () => ref({ sortBy: 'fullname', sortingOrder: null })
-const makeFiltersRef = () => ref({ isActive: true, search: '' })
+const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })
+const makeSortingRef = () => ref<Sorting>({ sortBy: 'fullname', sortingOrder: null })
+const makeFiltersRef = () => ref<Partial<Filters>>({ isActive: true, search: '' })
 
 export const useUsers = (options?: {
-  pagination?: Ref<{ page: number, perPage: number, total: number }>
-  sorting?: Ref<{ sortBy: string | null, sortingOrder: string | null }>
-  filters?: Ref<Partial<{ isActive: boolean, search: string }>>
+  pagination?: Ref<Pagination>
+  sorting?: Ref<Sorting>
+  filters?: Ref<Partial<Filters>>
 }) => {
   const isLoading = ref(false)
   const users = ref<User[]>([])
@@ -19,17 +19,15 @@ export const useUsers = (options?: {
 
   const fetch = async () => {
     isLoading.value = true
-    const { data, total } = await getUsers({
+    const { data, pagination: newPagination } = await getUsers({
       ...unref(filters),
-      sortBy: unref(sorting).sortBy,
-      sortingOrder: unref(sorting).sortingOrder,
-      page: unref(pagination).page,
-      perPage: unref(pagination).perPage,
+      ...unref(sorting),
+      ...unref(pagination),
     })
     users.value = data
 
     ignoreUpdates(() => {
-      pagination.value.total = total
+      pagination.value = newPagination
     })
 
     isLoading.value = false
@@ -40,6 +38,7 @@ export const useUsers = (options?: {
   watch(
     filters,
     () => {
+      // Reset pagination to first page when filters changed
       pagination.value.page = 1
       fetch()
     },
@@ -68,14 +67,14 @@ export const useUsers = (options?: {
 
     async update(user: User) {
       isLoading.value = true
-      await updateUser(user.id, user)
+      await updateUser(user)
       await fetch()
       isLoading.value = false
     },
 
     async remove(user: User) {
       isLoading.value = true
-      await removeUser(user.id)
+      await removeUser(user)
       await fetch()
       isLoading.value = false
     },
