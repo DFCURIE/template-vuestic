@@ -1,14 +1,14 @@
 <template>
   <VaLayout v-if="breakpoint.lgUp" class="h-screen bg-[var(--va-background-secondary)]">
     <template #left>
-      <RouterLink
+      <!-- <RouterLink
         class="bg-primary h-full flex items-center justify-center"
         style="width: 35vw"
         to="/"
         aria-label="Visit homepage"
       >
         <VuesticLogo :height="28" start="#FFF" />
-      </RouterLink>
+      </RouterLink> -->
     </template>
     <template #content>
       <main class="h-full flex items-center justify-center mx-auto max-w-[420px]">
