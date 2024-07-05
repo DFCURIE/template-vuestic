@@ -1,4 +1,4 @@
-import { getUsers as fetchUsersFromAPI, addUser as addUserToAPI, updateUser as updateUserInAPI, removeUser as removeUserFromAPI } from '../../services/api';
+import { getUsers as fetchUsersFromAPI, addUser as addUserToAPI, updateUser as updateUserInAPI, removeUser as removeUserFromAPI, getLevels as fetchLevelsFromAPI } from '../../services/api';
 
 export type Pagination = {
   page: number;
@@ -31,18 +31,23 @@ export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>)
   };
 };
 
+export const getLevels = async () => {
+  const response = await fetchLevelsFromAPI();
+  return response.data;
+};
+
 export const addUser = async (user: User) => {
   const formattedUser = {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
     level: {
-      id: user.role,
+      id: user.level,
     },
     password: user.password,
   };
 
-  console.log('Data to be sent to API:', formattedUser); // Tambahkan log ini untuk debugging
+  console.log('Data to be sent to API:', formattedUser);
 
   await addUserToAPI(formattedUser);
 };

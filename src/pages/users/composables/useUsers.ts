@@ -1,5 +1,5 @@
 import { Ref, ref, unref, watch } from 'vue';
-import { getUsers as fetchUsersFromAPI, updateUser as updateUserAPI, addUser as addUserAPI, removeUser as removeUserAPI, type Filters, Pagination, Sorting } from '../../../data/pages/users';
+import { getUsers as fetchUsersFromAPI, updateUser as updateUserAPI, addUser as addUserAPI, removeUser as removeUserAPI, getLevels as fetchLevelsFromAPI, type Filters, Pagination, Sorting } from '../../../data/pages/users';
 import { User } from '../types';
 import { watchIgnorable } from '@vueuse/core';
 
@@ -14,6 +14,7 @@ export const useUsers = (options?: {
 }) => {
   const isLoading = ref(false);
   const users = ref<User[]>([]);
+  const levels = ref<{ text: string; value: string }[]>([]);
 
   const { filters = makeFiltersRef(), sorting = makeSortingRef(), pagination = makePaginationRef() } = options || {};
 
@@ -21,26 +22,32 @@ export const useUsers = (options?: {
     isLoading.value = true;
     try {
       const data = await fetchUsersFromAPI({
-        ...unref(filters),
         page: pagination.value.page,
         perPage: pagination.value.perPage,
         sortBy: sorting.value.sortBy,
         sortingOrder: sorting.value.sortingOrder,
       });
-      console.log('Fetched users from API:', data); // Tambahkan log ini untuk debugging
       users.value = data.data;
 
       ignoreUpdates(() => {
-        pagination.value = {
-          page: data.pagination.page,
-          perPage: data.pagination.perPage,
-          total: data.pagination.total,
-        };
+        pagination.value.total = data.pagination.total;
       });
     } catch (error) {
       console.error('Failed to fetch users:', error);
     } finally {
       isLoading.value = false;
+    }
+  };
+
+  const fetchLevels = async () => {
+    try {
+      const data = await fetchLevelsFromAPI();
+      levels.value = data.map((level: any) => ({
+        text: level.name,
+        value: level.id,
+      }));
+    } catch (error) {
+      console.error('Failed to fetch levels:', error);
     }
   };
 
@@ -56,6 +63,7 @@ export const useUsers = (options?: {
   );
 
   fetch();
+  fetchLevels();
 
   return {
     isLoading,
@@ -63,11 +71,11 @@ export const useUsers = (options?: {
     sorting,
     pagination,
     users,
+    levels,
     fetch,
     async add(user: User) {
       isLoading.value = true;
       try {
-        console.log('Adding user:', user); // Tambahkan log ini untuk debugging
         await addUserAPI(user);
         await fetch(); // Pastikan fetch dipanggil untuk memperbarui tabel
       } catch (error) {
@@ -90,7 +98,7 @@ export const useUsers = (options?: {
     async remove(user: User) {
       isLoading.value = true;
       try {
-        await removeUserAPI(user);
+        await removeUserAPI(user.id);
         await fetch();
       } catch (error) {
         console.error('Failed to remove user:', error);

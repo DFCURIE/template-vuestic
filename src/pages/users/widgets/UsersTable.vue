@@ -1,7 +1,6 @@
-// src/pages/users/widgets/UsersTable.vue
 <script setup lang="ts">
 import { defineVaDataTableColumns, useModal } from 'vuestic-ui';
-import { User, UserRole } from '../types';
+import { User } from '../types';
 import { PropType, computed, toRef } from 'vue';
 import { Pagination, Sorting } from '../../../data/pages/users';
 import { useVModel } from '@vueuse/core';
@@ -9,6 +8,7 @@ import { useVModel } from '@vueuse/core';
 const columns = defineVaDataTableColumns([
   { label: 'Email', key: 'email', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
+  { label: 'Level', key: 'level.name', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ]);
 
@@ -33,12 +33,6 @@ const emit = defineEmits<{
 const users = toRef(props, 'users');
 const sortByVModel = useVModel(props, 'sortBy', emit);
 const sortingOrderVModel = useVModel(props, 'sortingOrder', emit);
-
-const roleColors: Record<UserRole, string> = {
-  admin: 'danger',
-  user: 'background-element',
-  owner: 'warning',
-};
 
 const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage));
 
@@ -75,7 +69,15 @@ const onUserDelete = async (user: User) => {
     </template>
 
     <template #cell(role)="{ rowData }">
-      <VaBadge :text="rowData.role" :color="roleColors[rowData.role as UserRole]" />
+      <div>
+        {{ rowData.role }}
+      </div>
+    </template>
+
+    <template #cell(level)="{ rowData }">
+      <div>
+        {{ rowData.level.name }}
+      </div>
     </template>
 
     <template #cell(actions)="{ rowData }">

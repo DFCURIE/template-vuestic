@@ -13,7 +13,6 @@ api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers['token'] = token;
-    console.log('Token added to request:', token); // Tambahkan log ini untuk debugging
   }
   return config;
 }, error => {
@@ -44,7 +43,6 @@ export const logout = async (token) => {
 export const getUsers = async (filters) => {
   try {
     const response = await api.get('/user', { params: filters });
-    console.log('Fetched users:', response.data); // Tambahkan log ini untuk debugging
     return response.data;
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -55,7 +53,6 @@ export const getUsers = async (filters) => {
 export const addUser = async (user) => {
   try {
     const response = await api.post('/user', user);
-    console.log('User added:', response.data); // Tambahkan log ini untuk debugging
     return response.data;
   } catch (error) {
     console.error('Error adding user:', error);
@@ -79,6 +76,16 @@ export const removeUser = async (userId) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting user:', error);
+    throw error;
+  }
+};
+
+export const getLevels = async () => {
+  try {
+    const response = await api.get('/level');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching levels:', error);
     throw error;
   }
 };

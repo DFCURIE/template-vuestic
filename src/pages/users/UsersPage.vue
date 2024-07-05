@@ -8,7 +8,7 @@ import { useModal, useToast } from 'vuestic-ui';
 
 const doShowEditUserModal = ref(false);
 
-const { users, isLoading, filters, sorting, pagination, fetch, add, update, remove } = useUsers();
+const { users, isLoading, filters, sorting, pagination, fetch, add, update, remove, levels } = useUsers();
 
 const userToEdit = ref<User | null>(null);
 
@@ -112,8 +112,8 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       :save-button-label="userToEdit ? 'Save' : 'Add'"
       @close="cancel"
       @save="
-        async (user) => {
-          await onUserSaved(user);
+        (user) => {
+          onUserSaved(user);
           ok();
         }
       "
