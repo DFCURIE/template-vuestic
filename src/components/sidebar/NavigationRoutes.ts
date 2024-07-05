@@ -25,13 +25,13 @@ export default {
         icon: 'group',
       },
     },
-    {
-      name: 'projects',
-      displayName: 'menu.projects',
-      meta: {
-        icon: 'folder_shared',
-      },
-    },
+    // {
+    //   name: 'projects',
+    //   displayName: 'menu.projects',
+    //   meta: {
+    //     icon: 'folder_shared',
+    //   },
+    // },
     {
       name: 'auth',
       displayName: 'menu.auth',

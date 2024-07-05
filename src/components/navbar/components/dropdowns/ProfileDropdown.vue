@@ -78,11 +78,11 @@ withDefaults(
             to: 'settings',
             icon: 'mso-settings',
           },
-          {
-            name: 'projects',
-            to: 'projects',
-            icon: 'mso-favorite',
-          },
+          // {
+          //   name: 'projects',
+          //   to: 'projects',
+          //   icon: 'mso-favorite',
+          // },
         ],
       },
       {
