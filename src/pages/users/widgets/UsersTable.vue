@@ -1,9 +1,10 @@
+// src/pages/users/widgets/UsersTable.vue
 <script setup lang="ts">
-import { defineVaDataTableColumns, useModal } from 'vuestic-ui'
-import { User, UserRole } from '../types'
-import { PropType, computed, toRef } from 'vue'
-import { Pagination, Sorting } from '../../../data/pages/users'
-import { useVModel } from '@vueuse/core'
+import { defineVaDataTableColumns, useModal } from 'vuestic-ui';
+import { User, UserRole } from '../types';
+import { PropType, computed, toRef } from 'vue';
+import { Pagination, Sorting } from '../../../data/pages/users';
+import { useVModel } from '@vueuse/core';
 
 const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'fullname', sortable: true },
@@ -11,7 +12,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Username', key: 'username', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
-])
+]);
 
 const props = defineProps({
   users: {
@@ -21,29 +22,30 @@ const props = defineProps({
   loading: { type: Boolean, default: false },
   pagination: { type: Object as PropType<Pagination>, required: true },
   sortBy: { type: String as PropType<Sorting['sortBy']>, required: true },
-  sortingOrder: { type: String as PropType<Sorting['sortingOrder']>, required: true },
-})
+  sortingOrder: { type: String as PropType<Sorting['sortingOrder']>, required: true, default: '' },
+});
 
 const emit = defineEmits<{
-  (event: 'edit-user', user: User): void
-  (event: 'delete-user', user: User): void
-  (event: 'update:sortBy', sortBy: Sorting['sortBy']): void
-  (event: 'update:sortingOrder', sortingOrder: Sorting['sortingOrder']): void
-}>()
+  (event: 'edit-user', user: User): void;
+  (event: 'delete-user', user: User): void;
+  (event: 'update:sortBy', sortBy: Sorting['sortBy']): void;
+  (event: 'update:sortingOrder', sortingOrder: Sorting['sortingOrder']): void;
+}>();
 
-const users = toRef(props, 'users')
-const sortByVModel = useVModel(props, 'sortBy', emit)
-const sortingOrderVModel = useVModel(props, 'sortingOrder', emit)
+const users = toRef(props, 'users');
+const sortByVModel = useVModel(props, 'sortBy', emit);
+const sortingOrderVModel = useVModel(props, 'sortingOrder', emit);
 
 const roleColors: Record<UserRole, string> = {
+  superadmin: 'primary',
   admin: 'danger',
+  member: 'success',
   user: 'background-element',
-  owner: 'warning',
-}
+};
 
-const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage))
+const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage));
 
-const { confirm } = useModal()
+const { confirm } = useModal();
 
 const onUserDelete = async (user: User) => {
   const agreed = await confirm({
@@ -53,12 +55,12 @@ const onUserDelete = async (user: User) => {
     cancelText: 'Cancel',
     size: 'small',
     maxWidth: '380px',
-  })
+  });
 
   if (agreed) {
-    emit('delete-user', user)
+    emit('delete-user', user);
   }
-}
+};
 </script>
 
 <template>
@@ -71,7 +73,6 @@ const onUserDelete = async (user: User) => {
   >
     <template #cell(fullname)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
-        <!-- Hapus referensi ke UserAvatar -->
         {{ rowData.fullname }}
       </div>
     </template>

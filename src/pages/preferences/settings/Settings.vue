@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-6 min-h-[36px] leading-5">
+  <!-- <div class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-6 min-h-[36px] leading-5">
     <p class="font-bold w-[200px]">Name</p>
     <div class="flex-1">
       <div class="max-w-[748px]">
@@ -10,7 +10,7 @@
       Edit
     </VaButton>
   </div>
-  <VaDivider />
+  <VaDivider /> -->
   <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 min-h-[36px] leading-5">
     <p class="font-bold w-[200px]">Email</p>
     <div class="flex-1">
@@ -28,7 +28,7 @@
       Reset Password
     </VaButton>
   </div>
-  <VaDivider />
+  <!-- <VaDivider />
   <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 min-h-[36px] leading-5">
     <p class="font-bold w-[200px]">Two-factor authentication</p>
     <div class="flex-1">
@@ -40,8 +40,8 @@
       {{ twoFA.button }}
     </VaButton>
   </div>
-  <VaDivider />
-  <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 min-h-[36px] leading-5">
+  <VaDivider /> -->
+  <!-- <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 min-h-[36px] leading-5">
     <p class="font-bold w-[200px]">Email subscriptions</p>
     <div class="flex-1">
       <div class="max-w-[748px]">
@@ -51,7 +51,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script lang="ts" setup>
 import { computed } from 'vue'

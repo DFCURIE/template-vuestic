@@ -1,56 +1,57 @@
+// src/pages/users/UsersPage.vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import UsersTable from './widgets/UsersTable.vue'
-import EditUserForm from './widgets/EditUserForm.vue'
-import { User } from './types'
-import { useUsers } from './composables/useUsers'
-import { useModal, useToast } from 'vuestic-ui'
+import { ref } from 'vue';
+import UsersTable from './widgets/UsersTable.vue';
+import EditUserForm from './widgets/EditUserForm.vue';
+import { User } from './types';
+import { useUsers } from './composables/useUsers';
+import { useModal, useToast } from 'vuestic-ui';
 
-const doShowEditUserModal = ref(false)
+const doShowEditUserModal = ref(false);
 
-const { users, isLoading, filters, sorting, pagination, ...usersApi } = useUsers()
+const { users, isLoading, filters, sorting, pagination, fetch, add, update, remove } = useUsers();
 
-const userToEdit = ref<User | null>(null)
+const userToEdit = ref<User | null>(null);
 
 const showEditUserModal = (user: User) => {
-  userToEdit.value = user
-  doShowEditUserModal.value = true
-}
+  userToEdit.value = user;
+  doShowEditUserModal.value = true;
+};
 
 const showAddUserModal = () => {
-  userToEdit.value = null
-  doShowEditUserModal.value = true
-}
+  userToEdit.value = null;
+  doShowEditUserModal.value = true;
+};
 
-const { init: notify } = useToast()
+const { init: notify } = useToast();
 
 const onUserSaved = async (user: User) => {
   if (userToEdit.value) {
-    await usersApi.update(user)
+    await update(user);
     notify({
       message: `${user.fullname} has been updated`,
       color: 'success',
-    })
+    });
   } else {
-    await usersApi.add(user)
+    await add(user);
     notify({
       message: `${user.fullname} has been created`,
       color: 'success',
-    })
+    });
   }
-}
+};
 
 const onUserDelete = async (user: User) => {
-  await usersApi.remove(user)
+  await remove(user);
   notify({
     message: `${user.fullname} has been deleted`,
     color: 'success',
-  })
-}
+  });
+};
 
-const editFormRef = ref()
+const editFormRef = ref();
 
-const { confirm } = useModal()
+const { confirm } = useModal();
 
 const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
@@ -58,14 +59,14 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       maxWidth: '380px',
       message: 'Form has unsaved changes. Are you sure you want to close it?',
       size: 'small',
-    })
+    });
     if (agreed) {
-      hide()
+      hide();
     }
   } else {
-    hide()
+    hide();
   }
-}
+};
 </script>
 
 <template>
@@ -75,15 +76,6 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
     <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
-          <VaButtonToggle
-            v-model="filters.isActive"
-            color="background-element"
-            border-color="background-element"
-            :options="[
-              { label: 'Active', value: true },
-              { label: 'Inactive', value: false },
-            ]"
-          />
           <VaInput v-model="filters.search" placeholder="Search">
             <template #prependInner>
               <VaIcon name="search" color="secondary" size="small" />
@@ -122,8 +114,8 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       @close="cancel"
       @save="
         (user) => {
-          onUserSaved(user)
-          ok()
+          onUserSaved(user);
+          ok();
         }
       "
     />
