@@ -28,6 +28,8 @@ const defaultNewUser: User = {
   projects: [],
   level: '',
   password: '',
+  firstName: '', // Tambahkan ini untuk memastikan firstName kosong
+  lastName: '',  // Tambahkan ini untuk memastikan lastName kosong
 };
 
 const newUser = ref<User>({ ...defaultNewUser });
@@ -49,6 +51,7 @@ watch(
   () => props.user,
   () => {
     if (!props.user) {
+      newUser.value = { ...defaultNewUser }; // Reset form ketika tidak ada user yang di-edit
       return;
     }
 
@@ -113,6 +116,7 @@ fetchLevels();
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.email]"
           name="email"
+          autocomplete="off"
         />
         <VaInput
           v-model="newUser.lastName"
@@ -120,6 +124,7 @@ fetchLevels();
           class="w-full sm:w-1/2"
           :rules="[validators.required]"
           name="lastName"
+          autocomplete="off"
         />
       </div>
 
@@ -131,6 +136,7 @@ fetchLevels();
             class="w-full"
             :rules="[validators.required]"
             name="firstName"
+            autocomplete="off"
           />
         </div>
       </div>
@@ -158,6 +164,7 @@ fetchLevels();
             class="w-full"
             :rules="[validators.required]"
             name="password"
+            autocomplete="new-password"
           />
         </div>
       </div>
