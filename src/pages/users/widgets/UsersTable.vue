@@ -7,9 +7,7 @@ import { Pagination, Sorting } from '../../../data/pages/users';
 import { useVModel } from '@vueuse/core';
 
 const columns = defineVaDataTableColumns([
-  { label: 'Full Name', key: 'fullname', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
-  { label: 'Username', key: 'username', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ]);
@@ -37,10 +35,9 @@ const sortByVModel = useVModel(props, 'sortBy', emit);
 const sortingOrderVModel = useVModel(props, 'sortingOrder', emit);
 
 const roleColors: Record<UserRole, string> = {
-  superadmin: 'primary',
   admin: 'danger',
-  member: 'success',
   user: 'background-element',
+  owner: 'warning',
 };
 
 const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage));
@@ -50,7 +47,7 @@ const { confirm } = useModal();
 const onUserDelete = async (user: User) => {
   const agreed = await confirm({
     title: 'Delete user',
-    message: `Are you sure you want to delete ${user.fullname}?`,
+    message: `Are you sure you want to delete ${user.email}?`,
     okText: 'Delete',
     cancelText: 'Cancel',
     size: 'small',
@@ -71,18 +68,6 @@ const onUserDelete = async (user: User) => {
     :items="users"
     :loading="$props.loading"
   >
-    <template #cell(fullname)="{ rowData }">
-      <div class="flex items-center gap-2 max-w-[230px] ellipsis">
-        {{ rowData.fullname }}
-      </div>
-    </template>
-
-    <template #cell(username)="{ rowData }">
-      <div class="max-w-[120px] ellipsis">
-        {{ rowData.username }}
-      </div>
-    </template>
-
     <template #cell(email)="{ rowData }">
       <div class="ellipsis max-w-[230px]">
         {{ rowData.email }}

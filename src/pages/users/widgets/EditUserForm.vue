@@ -1,3 +1,4 @@
+// src/pages/users/widgets/EditUserForm.vue
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
@@ -90,22 +91,6 @@ const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
-          v-model="newUser.fullname"
-          label="Full name"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="fullname"
-        />
-        <VaInput
-          v-model="newUser.username"
-          label="Username"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="username"
-        />
-      </div>
-      <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaInput
           v-model="newUser.email"
           label="Email"
           class="w-full sm:w-1/2"
@@ -125,10 +110,6 @@ const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
             name="role"
             value-by="value"
           />
-        </div>
-
-        <div class="flex items-center w-1/2 mt-4">
-          <VaCheckbox v-model="newUser.active" label="Active" class="w-full" name="active" />
         </div>
       </div>
 
