@@ -1,4 +1,3 @@
-// api.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:62024/v1';
@@ -10,9 +9,20 @@ export const api = axios.create({
   },
 });
 
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
 export const login = async (email, password) => {
   try {
     const response = await api.post('/login', { email, password });
+    localStorage.setItem('token', response.data.data.token); // Save the token
     return response.data;
   } catch (error) {
     console.error('Error during login:', error);
@@ -20,15 +30,18 @@ export const login = async (email, password) => {
   }
 };
 
-export const logout = async (email, password) => {
+export const logout = async (token) => {
   try {
-    const response = await api.post('/logout', { email, password });
+    const response = await api.post('/logout', { token });
+    localStorage.removeItem('token'); // Remove the token
     return response.data;
   } catch (error) {
     console.error('Error during logout:', error);
     throw error;
   }
 };
+
+
 
 // User management
 export const getUsers = async (params) => {

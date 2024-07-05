@@ -45,10 +45,10 @@ const avatarColor = (userName: string) => {
             </div>
           </template>
           <template #cell(project_owner)="{ rowData }">
-            <div class="flex items-center gap-2 ellipsis max-w-[230px]">
+            <!-- <div class="flex items-center gap-2 ellipsis max-w-[230px]">
               <UserAvatar :user="rowData.project_owner" size="small" />
               {{ rowData.project_owner.fullname }}
-            </div>
+            </div> -->
           </template>
           <template #cell(team)="{ rowData: project }">
             <VaAvatarGroup

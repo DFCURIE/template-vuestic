@@ -5,7 +5,7 @@ export const useUserStore = defineStore('user', {
     return {
       userName: '',
       email: '',
-      password: '', // Add password to the store
+      token: '',
       memberSince: '',
       pfp: '',
       is2FAEnabled: false,
@@ -21,15 +21,19 @@ export const useUserStore = defineStore('user', {
       this.userName = userName
     },
 
-    setUser(email: string, password: string) {
-      this.email = email;
-      this.password = password; // Store the password
+    setToken(token: string) {
+      this.token = token
+    },
+
+    setUser(email: string, token: string) {
+      this.email = email
+      this.token = token
     },
 
     clearUser() {
       this.userName = ''
       this.email = ''
-      this.password = '' // Clear the password
+      this.token = ''
       this.memberSince = ''
       this.pfp = ''
       this.is2FAEnabled = false

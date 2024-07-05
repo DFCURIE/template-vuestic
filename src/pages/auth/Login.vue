@@ -41,7 +41,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
-import { login, logout } from '../../services/api'
+import { login } from '../../services/api'
 import { useUserStore } from '../../stores/user-store' // Gunakan jalur relatif
 
 const { validate } = useForm('form')
@@ -52,28 +52,24 @@ const userStore = useUserStore()
 const formData = reactive({
   email: '',
   password: '',
-  keepLoggedIn: false,
 })
 
 const submit = async () => {
   if (validate()) {
     try {
-      const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        // Try to logout first
-        await logout(formData.email, formData.password);
-        localStorage.removeItem('token');
-      }
+      console.log('Submitting form:', formData)
       const response = await login(formData.email, formData.password);
-      if (response.status === 200) {
+      console.log('Login response:', response)
+      if (response.status === 200 || response.status === 201) {
         localStorage.setItem('token', response.data.token);
-        userStore.setUser(formData.email, formData.password)
+        userStore.setUser(formData.email, response.data.token);
         toast.init({ message: "You've successfully logged in", color: 'success' });
         router.push({ name: 'dashboard' }); // Redirect ke halaman dashboard
       } else {
         toast.init({ message: response.message, color: 'danger' });
       }
     } catch (error) {
+      console.error('Login error:', error)
       toast.init({ message: 'Login failed. Please try again.', color: 'danger' });
     }
   }
