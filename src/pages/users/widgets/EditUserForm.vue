@@ -1,4 +1,3 @@
-// src/pages/users/widgets/EditUserForm.vue
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
@@ -26,6 +25,7 @@ const defaultNewUser: User = {
   email: '',
   active: true,
   projects: [],
+  password: '',
 }
 
 const newUser = ref<User>({ ...defaultNewUser })
@@ -79,10 +79,11 @@ const onSave = () => {
   }
 }
 
-const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
-  { text: 'Admin', value: 'admin' },
-  { text: 'User', value: 'user' },
-  { text: 'Owner', value: 'owner' },
+const roleSelectOptions = [
+  { text: 'Supereadmin', value: '707028e3-904c-4af7-9a46-6cfd9c6ec911' },
+  { text: 'Admin', value: '627a88c0-99af-4018-997e-b26393a6956f' },
+  { text: 'Member', value: '2b7c705f-bc12-41d1-94a5-ae3a9cc2e388' },
+  { text: 'User', value: 'a8bcdfff-e789-405b-b125-8a3dbc88ce6a' },
 ]
 </script>
 
@@ -91,11 +92,33 @@ const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <div class="flex gap-4 flex-col sm:flex-row w-full">
         <VaInput
+          v-model="newUser.firstName"
+          label="First Name"
+          class="w-full sm:w-1/2"
+          :rules="[validators.required]"
+          name="firstName"
+        />
+        <VaInput
+          v-model="newUser.lastName"
+          label="Last Name"
+          class="w-full sm:w-1/2"
+          :rules="[validators.required]"
+          name="lastName"
+        />
+        <VaInput
           v-model="newUser.email"
           label="Email"
           class="w-full sm:w-1/2"
           :rules="[validators.required, validators.email]"
           name="email"
+        />
+        <VaInput
+          v-model="newUser.password"
+          label="Password"
+          type="password"
+          class="w-full sm:w-1/2"
+          :rules="[validators.required]"
+          name="password"
         />
       </div>
 

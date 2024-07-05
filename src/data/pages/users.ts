@@ -1,4 +1,3 @@
-// src/data/pages/users.ts
 import { getUsers as fetchUsersFromAPI, addUser as addUserToAPI, updateUser as updateUserInAPI, removeUser as removeUserFromAPI } from '../../services/api';
 
 export type Pagination = {
@@ -18,7 +17,7 @@ export type Filters = {
 };
 
 export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>) => {
-  const response = await fetchUsersFromAPI();
+  const response = await fetchUsersFromAPI(filters);
   const users = response.data;
 
   const { page = 1, perPage = 10 } = filters || {};
@@ -33,7 +32,19 @@ export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>)
 };
 
 export const addUser = async (user: User) => {
-  await addUserToAPI(user);
+  const formattedUser = {
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    level: {
+      id: user.role,
+    },
+    password: user.password,
+  };
+
+  console.log('Data to be sent to API:', formattedUser); // Tambahkan log ini untuk debugging
+
+  await addUserToAPI(formattedUser);
 };
 
 export const updateUser = async (user: User) => {

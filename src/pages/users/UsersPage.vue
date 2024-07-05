@@ -1,4 +1,3 @@
-// src/pages/users/UsersPage.vue
 <script setup lang="ts">
 import { ref } from 'vue';
 import UsersTable from './widgets/UsersTable.vue';
@@ -113,8 +112,8 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       :save-button-label="userToEdit ? 'Save' : 'Add'"
       @close="cancel"
       @save="
-        (user) => {
-          onUserSaved(user);
+        async (user) => {
+          await onUserSaved(user);
           ok();
         }
       "

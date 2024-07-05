@@ -1,4 +1,3 @@
-// src/services/api.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:62024/v1';
@@ -56,6 +55,7 @@ export const getUsers = async (filters) => {
 export const addUser = async (user) => {
   try {
     const response = await api.post('/user', user);
+    console.log('User added:', response.data); // Tambahkan log ini untuk debugging
     return response.data;
   } catch (error) {
     console.error('Error adding user:', error);
