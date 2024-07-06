@@ -65,7 +65,12 @@ export const updateUser = async (user) => {
     if (!user.id) {
       throw new Error('User ID is required for update');
     }
-    const response = await api.put(`/user/${user.id}`, user);
+    console.log('Updating user with ID:', user.id); // Tambahkan log untuk debugging
+    const response = await api.put(`/user/${user.id}`, {
+      level: {
+        id: user.level // Asumsikan `user.level` adalah `level.id`
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);

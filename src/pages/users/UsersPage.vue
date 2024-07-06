@@ -25,20 +25,18 @@ const showAddUserModal = () => {
 const { init: notify } = useToast();
 
 const onUserSaved = async (user: User) => {
-  if (userToEdit.value) {
-    await update(user);
+  const userId = user.id || user.userId; // Gunakan userId jika id tidak ada
+  if (userId) {
+    await update({ id: userId, level: user.level }); // Asumsikan `user.level` adalah `level.id`
     notify({
       message: `${user.fullname} has been updated`,
       color: 'success',
     });
   } else {
-    await add(user);
-    notify({
-      message: `${user.fullname} has been created`,
-      color: 'success',
-    });
+    console.error('Invalid user ID for update in UsersPage:', user);
   }
 };
+
 
 const onUserDelete = async (user: User) => {
   console.log('User to be deleted:', user);

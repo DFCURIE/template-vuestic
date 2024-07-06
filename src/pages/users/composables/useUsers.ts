@@ -84,16 +84,23 @@ export const useUsers = (options?: {
         isLoading.value = false;
       }
     },
+
     async update(user: User) {
       isLoading.value = true;
       try {
-        await updateUserAPI(user);
+        const userId = user.id || user.userId; // Gunakan userId jika id tidak ada
+        if (!userId) {
+          throw new Error('User ID is required for update');
+        }
+        console.log('Updating user with ID:', userId); // Tambahkan log untuk debugging
+        await updateUserAPI({ id: userId, level: user.level }); // Asumsikan `user.level` adalah `level.id`
         await fetch();
       } catch (error) {
         console.error('Failed to update user:', error);
       } finally {
         isLoading.value = false;
       }
+ 
     },
     async remove(user: User) {
       isLoading.value = true;

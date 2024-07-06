@@ -66,7 +66,13 @@ const emit = defineEmits(['close', 'save']);
 
 const onSave = () => {
   if (form.validate()) {
-    emit('save', newUser.value);
+    const userToSave = {
+      ...newUser.value,
+      id: newUser.value.id !== -1 ? newUser.value.id : newUser.value.userId,
+      // Tambahkan log ini untuk memastikan data yang dikirim valid
+    };
+    console.log('Data to be saved:', userToSave);
+    emit('save', userToSave);
   }
 };
 
