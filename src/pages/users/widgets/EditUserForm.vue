@@ -18,25 +18,23 @@ const props = defineProps({
 
 const defaultNewUser: User = {
   id: -1,
-  avatar: '',
   fullname: '',
-  role: 'global:member',
+  level: 'member', // Set default level
   username: '',
   notes: '',
   email: '',
   active: true,
   projects: [],
-  level: '',
   password: '',
-  firstName: '', // Tambahkan ini untuk memastikan firstName kosong
-  lastName: '',  // Tambahkan ini untuk memastikan lastName kosong
+  firstName: '',
+  lastName: '',
 };
 
 const newUser = ref<User>({ ...defaultNewUser });
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
-    if (key === 'avatar' || key === 'projects') {
+    if (key === 'projects') {
       return false;
     }
     return newUser.value[key as keyof User] !== (props.user ?? defaultNewUser)?.[key as keyof User];
@@ -57,22 +55,10 @@ watch(
 
     newUser.value = {
       ...props.user,
-      avatar: props.user.avatar || '',
-      role: 'global:member',
     };
   },
   { immediate: true },
 );
-
-const avatar = ref<File>();
-
-const makeAvatarBlobUrl = (avatar: File) => {
-  return URL.createObjectURL(avatar);
-};
-
-watch(avatar, (newAvatar) => {
-  newUser.value.avatar = newAvatar ? makeAvatarBlobUrl(newAvatar) : '';
-});
 
 const form = useForm('add-user-form');
 
@@ -84,20 +70,19 @@ const onSave = () => {
   }
 };
 
-const levelSelectOptions = ref<{ text: string; value: string }[]>([
-  { text: 'Supereadmin', value: '707028e3-904c-4af7-9a46-6cfd9c6ec911' },
-  { text: 'Admin', value: '627a88c0-99af-4018-997e-b26393a6956f' },
-  { text: 'Member', value: '2b7c705f-bc12-41d1-94a5-ae3a9cc2e388' },
-  { text: 'User', value: 'a8bcdfff-e789-405b-b125-8a3dbc88ce6a' },
-]);
+const levelSelectOptions = ref<{ text: string; value: string }[]>([]);
 
 const fetchLevels = async () => {
   try {
     const data = await getLevels();
-    levelSelectOptions.value = data.map((level: any) => ({
-      text: level.name,
-      value: level.id,
-    }));
+    const uniqueLevels = data.reduce((acc: { text: string; value: string }[], level: any) => {
+      const exists = acc.find(l => l.value.toLowerCase() === level.id.toLowerCase());
+      if (!exists) {
+        acc.push({ text: level.name, value: level.id });
+      }
+      return acc;
+    }, []);
+    levelSelectOptions.value = uniqueLevels;
   } catch (error) {
     console.error('Failed to fetch levels:', error);
   }
@@ -155,7 +140,7 @@ fetchLevels();
         </div>
       </div>
 
-      <div class="flex gap-4 w-full">
+      <div class="flex gap-4 w-full" v-if="newUser.id === -1">
         <div class="w-1/2">
           <VaInput
             v-model="newUser.password"
