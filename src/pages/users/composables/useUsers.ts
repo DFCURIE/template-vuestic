@@ -97,14 +97,19 @@ export const useUsers = (options?: {
     },
     async remove(user: User) {
       isLoading.value = true;
-      try {
-        await removeUserAPI(user.id);
-        await fetch();
-      } catch (error) {
-        console.error('Failed to remove user:', error);
-      } finally {
-        isLoading.value = false;
+      const userId = user.userId || user.id; // Gunakan user.userId jika ada, jika tidak gunakan user.id
+      console.log('Removing user with ID:', userId);
+      if (userId) {
+        try {
+          await removeUserAPI(userId);
+          await fetch();
+        } catch (error) {
+          console.error('Failed to remove user:', error);
+        }
+      } else {
+        console.error('Invalid user ID for delete in useUsers:', userId);
       }
-    },
+      isLoading.value = false;
+    },    
   };
 };

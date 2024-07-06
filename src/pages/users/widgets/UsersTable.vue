@@ -49,7 +49,10 @@ const onUserDelete = async (user: User) => {
   });
 
   if (agreed) {
+    console.log('Deleting user:', user);
     emit('delete-user', user);
+  } else {
+    console.error('User deletion cancelled or invalid user ID:', user);
   }
 };
 </script>

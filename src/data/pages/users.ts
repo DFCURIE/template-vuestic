@@ -56,6 +56,12 @@ export const updateUser = async (user: User) => {
   await updateUserInAPI(user);
 };
 
-export const removeUser = async (user: User) => {
-  await removeUserFromAPI(user.id);
+export const removeUser = async (userId: string) => {
+  try {
+    const response = await removeUserFromAPI(userId);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to remove user:', error);
+    throw error;
+  }
 };

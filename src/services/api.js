@@ -62,6 +62,9 @@ export const addUser = async (user) => {
 
 export const updateUser = async (user) => {
   try {
+    if (!user.id) {
+      throw new Error('User ID is required for update');
+    }
     const response = await api.put(`/user/${user.id}`, user);
     return response.data;
   } catch (error) {
@@ -69,6 +72,7 @@ export const updateUser = async (user) => {
     throw error;
   }
 };
+
 
 export const removeUser = async (userId) => {
   try {
@@ -86,6 +90,46 @@ export const getLevels = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching levels:', error);
+    throw error;
+  }
+};
+
+export const addLevel = async (level) => {
+  try {
+    const response = await api.post('/level', level);
+    return response.data;
+  } catch (error) {
+    console.error('Error adding level:', error);
+    throw error;
+  }
+};
+
+export const updateLevel = async (level) => {
+  try {
+    const response = await api.put(`/level/${level.id}`, level);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating level:', error);
+    throw error;
+  }
+};
+
+export const removeLevel = async (levelId) => {
+  try {
+    const response = await api.delete(`/level/${levelId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting level:', error);
+    throw error;
+  }
+};
+
+export const getLevelById = async (levelId) => {
+  try {
+    const response = await api.get(`/level/${levelId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching level by ID:', error);
     throw error;
   }
 };

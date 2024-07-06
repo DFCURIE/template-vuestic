@@ -8,7 +8,7 @@ import { useModal, useToast } from 'vuestic-ui';
 
 const doShowEditUserModal = ref(false);
 
-const { users, isLoading, filters, sorting, pagination, fetch, add, update, remove, levels } = useUsers();
+const { users, isLoading, filters, sorting, pagination, fetch, add, update, remove } = useUsers();
 
 const userToEdit = ref<User | null>(null);
 
@@ -41,11 +41,20 @@ const onUserSaved = async (user: User) => {
 };
 
 const onUserDelete = async (user: User) => {
-  await remove(user);
-  notify({
-    message: `${user.fullname} has been deleted`,
-    color: 'success',
-  });
+  console.log('User to be deleted:', user);
+  if (user.userId) {  // Menggunakan user.userId
+    try {
+      await remove(user);
+      notify({
+        message: `${user.firstName} ${user.lastName} has been deleted`,
+        color: 'success',
+      });
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+    }
+  } else {
+    console.error('Invalid user ID for delete in UsersPage:', user.userId);
+  }
 };
 
 const editFormRef = ref();
