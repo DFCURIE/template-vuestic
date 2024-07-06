@@ -1,0 +1,216 @@
+@import 'vuestic-ui/dist/styles/css-variables.css';
+@import 'vuestic-ui/dist/styles/essential.css';
+@import 'vuestic-ui/dist/styles/theme.css';
+@import 'vuestic-ui/dist/styles/typography.css';
+.va-input,
+.va-select {
+  width: 100%;
+}
+
+:root {
+  --va-modal-padding-top: 1rem;
+  --va-modal-padding-right: 1rem;
+  --va-modal-padding-bottom: 1rem;
+  --va-modal-padding-left: 1rem;
+}
+
+.va-modal {
+  line-height: 20px;
+}
+.va-modal__message {
+  margin-bottom: 16px;
+}
+.va-modal__dialog {
+  border-radius: 8px;
+}
+@media (min-width: 640px) {
+  .va-modal__dialog {
+    border-radius: 4px;
+  }
+}
+
+.va-input-label {
+  font-size: 9px;
+  line-height: 14px;
+  letter-spacing: 0.4px;
+  min-height: 14px;
+}
+.va-input-label__required-mark {
+  font-size: 13px;
+}
+.va-input-wrapper__size-keeper {
+  height: auto;
+}
+.va-input-wrapper__label--outer {
+  margin-bottom: 4px;
+}
+.va-input-wrapper__field {
+  padding: 8px 12px;
+}
+
+.va-sidebar__item__content {
+  min-height: 44px;
+}
+
+.va-select--small .va-input-wrapper__field {
+  padding: 0 0.25rem;
+}
+.va-select-anchor__input {
+  flex: unset;
+}
+
+.va-card__title {
+  padding-bottom: calc(var(--va-card-padding) / 2) !important;
+}
+
+.va-data-table .va-inner-loading__spinner {
+  margin-top: 32px;
+}
+
+@font-face {
+  font-family: "Vuestic Icons";
+  font-weight: normal;
+  font-style: normal;
+  src: url("vuestic-icons.eot");
+  src: url("/src/scss/icon-fonts/vuestic-icons/vuestic-icons.eot?#iefix?local") format("eot"), url("/src/scss/icon-fonts/vuestic-icons/vuestic-icons.woff?url") format("woff"), url("/src/scss/icon-fonts/vuestic-icons/vuestic-icons.ttf") format("truetype"), url("/src/scss/icon-fonts/vuestic-icons/vuestic-icons.svg#vuestic-icons") format("svg");
+}
+.vuestic-iconset {
+  line-height: 1;
+}
+
+.vuestic-iconset::before {
+  display: inline-block;
+  font-family: "Vuestic Icons";
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.vuestic-iconset-comments::before {
+  content: "A";
+}
+
+.vuestic-iconset-components::before {
+  content: "B";
+}
+
+.vuestic-iconset-dashboard::before {
+  content: "C";
+}
+
+.vuestic-iconset-extras::before {
+  content: "D";
+}
+
+.vuestic-iconset-files::before {
+  content: "E";
+}
+
+.vuestic-iconset-forms::before {
+  content: "F";
+}
+
+.vuestic-iconset-graph::before {
+  content: "G";
+}
+
+.vuestic-iconset-auth::before {
+  content: "H";
+}
+
+.vuestic-iconset-image::before {
+  content: "I";
+}
+
+.vuestic-iconset-maps::before {
+  content: "J";
+}
+
+.vuestic-iconset-music::before {
+  content: "K";
+}
+
+.vuestic-iconset-settings::before {
+  content: "L";
+}
+
+.vuestic-iconset-statistics::before {
+  content: "M";
+}
+
+.vuestic-iconset-tables::before {
+  content: "N";
+}
+
+.vuestic-iconset-time::before {
+  content: "O";
+}
+
+.vuestic-iconset-ui-elements::before {
+  content: "P";
+}
+
+.vuestic-iconset-user::before {
+  content: "Q";
+}
+
+.vuestic-iconset-video::before {
+  content: "R";
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  @apply text-regularMedium;
+  --va-checkbox-font-size: 0.875rem;
+  --va-card-box-shadow: none;
+  --va-card-padding: 1rem;
+  --va-font-family: "Inter", sans-serif;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: monospace;
+  font-size: 1em;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-title {
+  @apply text-[32px] md:text-5xl font-bold leading-9 md:leading-[56px] max-sm:mt-6 mb-6 md:mb-4;
+}
+
+.h1 {
+  @apply text-[32px] md:text-5xl font-bold leading-9 md:leading-[56px] max-sm:mt-6 mb-6 md:mb-4;
+}
+
+.h3,
+.page-sub-title {
+  @apply text-2xl font-bold leading-[30px];
+}
+
+.h5 {
+  @apply font-bold leading-tight;
+}
+
+.block-title {
+  @apply text-2xl font-bold mb-2;
+}
+
+.pricing-plan-card-title {
+  @apply text-[28px] md:text-[32px] leading-10 font-bold;
+}
+
+.text-regular-small {
+  font-size: 0.8125rem;
+  line-height: 1rem;
+}/*# sourceMappingURL=main.css.map */
