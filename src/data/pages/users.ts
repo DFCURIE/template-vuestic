@@ -1,4 +1,5 @@
 import { getUsers as fetchUsersFromAPI, addUser as addUserToAPI, updateUser as updateUserInAPI, removeUser as removeUserFromAPI, getLevels as fetchLevelsFromAPI } from '../../services/api';
+import { User } from '../pages/users/types';
 
 export type Pagination = {
   page: number;
@@ -45,6 +46,7 @@ export const addUser = async (user: User) => {
       id: user.level,
     },
     password: user.password,
+    notes: user.notes,
   };
 
   console.log('Data to be sent to API:', formattedUser);
@@ -52,8 +54,18 @@ export const addUser = async (user: User) => {
   await addUserToAPI(formattedUser);
 };
 
-export const updateUser = async (user: User) => {
-  await updateUserInAPI(user);
+export const updateUser = async (user: Partial<User>) => {
+  const updateData = {
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    level: {
+      id: user.level
+    },
+    notes: user.notes
+  };
+  await updateUserInAPI(updateData);
 };
 
 export const removeUser = async (userId: string) => {

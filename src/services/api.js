@@ -22,6 +22,9 @@ api.interceptors.request.use(config => {
 export const login = async (email, password) => {
   try {
     const response = await api.post('/login', { email, password });
+    if (response.data.status === 200 && response.data.data.token) {
+      localStorage.setItem('token', response.data.data.token);
+    }
     return response.data;
   } catch (error) {
     console.error('Error during login:', error);
@@ -29,10 +32,11 @@ export const login = async (email, password) => {
   }
 };
 
-export const logout = async (token) => {
+export const logout = async () => {
   try {
+    const token = localStorage.getItem('token');
     const response = await api.post('/logout', { token });
-    localStorage.removeItem('token'); // Remove the token
+    localStorage.removeItem('token');
     return response.data;
   } catch (error) {
     console.error('Error during logout:', error);
@@ -65,12 +69,7 @@ export const updateUser = async (user) => {
     if (!user.id) {
       throw new Error('User ID is required for update');
     }
-    console.log('Updating user with ID:', user.id); // Tambahkan log untuk debugging
-    const response = await api.put(`/user/${user.id}`, {
-      level: {
-        id: user.level // Asumsikan `user.level` adalah `level.id`
-      }
-    });
+    const response = await api.put(`/user/${user.id}`, user);
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);
@@ -78,9 +77,11 @@ export const updateUser = async (user) => {
   }
 };
 
-
 export const removeUser = async (userId) => {
   try {
+    if (!userId) {
+      throw new Error('User ID is required for deletion');
+    }
     const response = await api.delete(`/user/${userId}`);
     return response.data;
   } catch (error) {
@@ -111,6 +112,9 @@ export const addLevel = async (level) => {
 
 export const updateLevel = async (level) => {
   try {
+    if (!level.id) {
+      throw new Error('Level ID is required for update');
+    }
     const response = await api.put(`/level/${level.id}`, level);
     return response.data;
   } catch (error) {

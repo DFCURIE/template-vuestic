@@ -25,33 +25,62 @@ const showAddUserModal = () => {
 const { init: notify } = useToast();
 
 const onUserSaved = async (user: User) => {
-  const userId = user.id || user.userId; // Gunakan userId jika id tidak ada
-  if (userId) {
-    await update({ id: userId, level: user.level }); // Asumsikan `user.level` adalah `level.id`
+  try {
+    if (user.id) {
+      // Update existing user
+      const updateData = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        level: { id: user.level },
+        notes: user.notes
+      };
+      await update(updateData);
+      notify({
+        message: `${user.firstName} ${user.lastName} has been updated`,
+        color: 'success',
+      });
+    } else {
+      // Add new user
+      await add(user);
+      notify({
+        message: `${user.firstName} ${user.lastName} has been added`,
+        color: 'success',
+      });
+    }
+    await fetch();  // Refresh user list
+    doShowEditUserModal.value = false;  // Close modal
+  } catch (error) {
+    console.error('Failed to save user:', error);
     notify({
-      message: `${user.fullname} has been updated`,
-      color: 'success',
+      message: 'Failed to save user',
+      color: 'danger',
     });
-  } else {
-    console.error('Invalid user ID for update in UsersPage:', user);
   }
 };
 
-
 const onUserDelete = async (user: User) => {
   console.log('User to be deleted:', user);
-  if (user.userId) {  // Menggunakan user.userId
+  // Ensure the correct ID property is used
+  const userId = user.id || user.userId || user._id;
+  if (userId) {
     try {
-      await remove(user);
+      await remove(userId);
       notify({
         message: `${user.firstName} ${user.lastName} has been deleted`,
         color: 'success',
       });
+      await fetch();  // Refresh user list
     } catch (error) {
       console.error('Failed to delete user:', error);
+      notify({
+        message: 'Failed to delete user',
+        color: 'danger',
+      });
     }
   } else {
-    console.error('Invalid user ID for delete in UsersPage:', user.userId);
+    console.error('Invalid user ID for delete in UsersPage:', user);
   }
 };
 
@@ -118,12 +147,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
       :user="userToEdit"
       :save-button-label="userToEdit ? 'Save' : 'Add'"
       @close="cancel"
-      @save="
-        (user) => {
-          onUserSaved(user);
-          ok();
-        }
-      "
+      @save="onUserSaved"
     />
   </VaModal>
 </template>

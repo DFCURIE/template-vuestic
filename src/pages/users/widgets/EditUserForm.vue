@@ -17,9 +17,9 @@ const props = defineProps({
 });
 
 const defaultNewUser: User = {
-  id: -1,
+  id: undefined,
   fullname: '',
-  level: 'member', // Set default level
+  level: '',
   username: '',
   notes: '',
   email: '',
@@ -49,7 +49,7 @@ watch(
   () => props.user,
   () => {
     if (!props.user) {
-      newUser.value = { ...defaultNewUser }; // Reset form ketika tidak ada user yang di-edit
+      newUser.value = { ...defaultNewUser };
       return;
     }
 
@@ -67,10 +67,19 @@ const emit = defineEmits(['close', 'save']);
 const onSave = () => {
   if (form.validate()) {
     const userToSave = {
-      ...newUser.value,
-      id: newUser.value.id !== -1 ? newUser.value.id : newUser.value.userId,
-      // Tambahkan log ini untuk memastikan data yang dikirim valid
+      id: newUser.value.id,
+      firstName: newUser.value.firstName,
+      lastName: newUser.value.lastName,
+      email: newUser.value.email,
+      level: newUser.value.level,
+      notes: newUser.value.notes,
     };
+
+    if (!userToSave.id) {
+      // Hanya tambahkan password untuk user baru
+      userToSave.password = newUser.value.password;
+    }
+
     console.log('Data to be saved:', userToSave);
     emit('save', userToSave);
   }
@@ -81,14 +90,10 @@ const levelSelectOptions = ref<{ text: string; value: string }[]>([]);
 const fetchLevels = async () => {
   try {
     const data = await getLevels();
-    const uniqueLevels = data.reduce((acc: { text: string; value: string }[], level: any) => {
-      const exists = acc.find(l => l.value.toLowerCase() === level.id.toLowerCase());
-      if (!exists) {
-        acc.push({ text: level.name, value: level.id });
-      }
-      return acc;
-    }, []);
-    levelSelectOptions.value = uniqueLevels;
+    levelSelectOptions.value = data.map(level => ({
+      text: level.name,
+      value: level.id
+    }));
   } catch (error) {
     console.error('Failed to fetch levels:', error);
   }
@@ -142,23 +147,24 @@ fetchLevels();
             :rules="[validators.required]"
             name="level"
             value-by="value"
+            text-by="text"
           />
         </div>
       </div>
 
-      <div class="flex gap-4 w-full" v-if="newUser.id === -1">
-        <div class="w-1/2">
-          <VaInput
-            v-model="newUser.password"
-            label="Password"
-            type="password"
-            class="w-full"
-            :rules="[validators.required]"
-            name="password"
-            autocomplete="new-password"
-          />
-        </div>
+      <div class="flex gap-4 w-full" v-if="!newUser.id">
+      <div class="w-1/2">
+        <VaInput
+          v-model="newUser.password"
+          label="Password"
+          type="password"
+          class="w-full"
+          :rules="[validators.required]"
+          name="password"
+          autocomplete="new-password"
+        />
       </div>
+    </div>
 
       <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">

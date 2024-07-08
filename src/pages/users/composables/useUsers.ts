@@ -100,11 +100,10 @@ export const useUsers = (options?: {
       } finally {
         isLoading.value = false;
       }
- 
     },
-    async remove(user: User) {
+    
+    async remove(userId: string) { // Memperbaiki argumen untuk menerima userId
       isLoading.value = true;
-      const userId = user.userId || user.id; // Gunakan user.userId jika ada, jika tidak gunakan user.id
       console.log('Removing user with ID:', userId);
       if (userId) {
         try {
