@@ -5,7 +5,7 @@
         <VaButton preset="secondary" color="textPrimary">
           <span class="profile-dropdown__anchor min-w-max">
             <slot />
-            <VaAvatar :size="27" color="blue">
+            <VaAvatar :size="27" color="primary">
               <span class="ellipsis">...</span>
             </VaAvatar>
           </span>
