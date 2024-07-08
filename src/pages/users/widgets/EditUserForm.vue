@@ -23,7 +23,6 @@ const defaultNewUser: User = {
   lastName: '',
   email: '',
   level: '',
-  notes: '',
   password: '',
 };
 
@@ -88,16 +87,16 @@ fetchLevels();
 </script>
 
 <template>
-  <VaForm v-slot="{ isValid }" ref="user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
-    <div class="self-stretch flex-col justify-start items-start gap-4 flex">
+  <VaForm v-slot="{ isValid }" ref="user-form" class="flex flex-col gap-4 w-full">
+    <div class="flex flex-col gap-4 w-full">
       <template v-if="!isEditMode">
-        <div class="flex gap-4 flex-col sm:flex-row w-full">
+        <div class="flex flex-wrap gap-4 w-full">
           <VaInput
-            v-model="newUser.email"
-            label="Email"
+            v-model="newUser.firstName"
+            label="First Name"
             class="w-full sm:w-1/2"
-            :rules="[validators.required, validators.email]"
-            name="email"
+            :rules="[validators.required]"
+            name="firstName"
             autocomplete="off"
           />
           <VaInput
@@ -109,53 +108,70 @@ fetchLevels();
             autocomplete="off"
           />
         </div>
-        <div class="flex gap-4 w-full">
-          <div class="w-1/2">
-            <VaInput
-              v-model="newUser.firstName"
-              label="First Name"
-              class="w-full"
-              :rules="[validators.required]"
-              name="firstName"
-              autocomplete="off"
-            />
-          </div>
-        </div>
-        <div class="flex gap-4 w-full">
-          <div class="w-1/2">
-            <VaInput
-              v-model="newUser.password"
-              label="Password"
-              type="password"
-              class="w-full"
-              :rules="[validators.required]"
-              name="password"
-              autocomplete="new-password"
-            />
-          </div>
+        <div class="flex flex-wrap gap-4 w-full">
+          <VaInput
+            v-model="newUser.email"
+            label="Email"
+            class="w-full sm:w-1/2"
+            :rules="[validators.required, validators.email]"
+            name="email"
+            autocomplete="off"
+          />
+          <VaInput
+            v-model="newUser.password"
+            label="Password"
+            type="password"
+            class="w-full sm:w-1/2"
+            :rules="[validators.required]"
+            name="password"
+            autocomplete="new-password"
+          />
         </div>
       </template>
       
-      <div class="flex gap-4 w-full">
-        <div class="w-1/2">
-          <VaSelect
-            v-model="newUser.level"
-            label="Level"
-            class="w-full"
-            :options="levelSelectOptions"
-            :rules="[validators.required]"
-            name="level"
-            value-by="value"
-            text-by="text"
-          />
-        </div>
-      </div>
+      <VaSelect
+        v-model="newUser.level"
+        label="Level"
+        class="w-full sm:w-1/2"
+        :options="levelSelectOptions"
+        :rules="[validators.required]"
+        name="level"
+        value-by="value"
+        text-by="text"
+      />
 
-      <VaTextarea v-if="!isEditMode" v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
-      <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
+      <div class="flex flex-wrap justify-end gap-4 w-full">
         <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
       </div>
     </div>
   </VaForm>
 </template>
+
+<style scoped>
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.sm\:w-1\/2 {
+  width: 50%;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+</style>
