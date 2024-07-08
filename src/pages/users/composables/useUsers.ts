@@ -21,14 +21,23 @@ export const useUsers = (options?: {
   const fetch = async () => {
     isLoading.value = true;
     try {
+      console.log('Fetching users with filters:', {
+        page: pagination.value.page,
+        perPage: pagination.value.perPage,
+        sortBy: sorting.value.sortBy,
+        sortingOrder: sorting.value.sortingOrder,
+        search: filters.value.search,
+      });
       const data = await fetchUsersFromAPI({
         page: pagination.value.page,
         perPage: pagination.value.perPage,
         sortBy: sorting.value.sortBy,
         sortingOrder: sorting.value.sortingOrder,
+        search: filters.value.search,
       });
+      console.log('Data received from API:', data);
       users.value = data.data;
-
+  
       ignoreUpdates(() => {
         pagination.value.total = data.pagination.total;
       });
@@ -38,7 +47,8 @@ export const useUsers = (options?: {
       isLoading.value = false;
     }
   };
-
+  
+  
   const fetchLevels = async () => {
     try {
       const data = await fetchLevelsFromAPI();
@@ -56,12 +66,13 @@ export const useUsers = (options?: {
   watch(
     filters,
     () => {
+      console.log('Filters changed:', filters.value);
       pagination.value.page = 1;
       fetch();
     },
     { deep: true },
   );
-
+  
   fetch();
   fetchLevels();
 

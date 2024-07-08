@@ -1,3 +1,51 @@
+<template>
+  <h1 class="page-title">Users</h1>
+
+  <VaCard>
+    <VaCardContent>
+      <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
+        <div class="flex flex-col md:flex-row gap-2 justify-start">
+          <VaInput v-model="filters.search" placeholder="Search">
+            <template #prependInner>
+              <VaIcon name="search" color="secondary" size="small" />
+            </template>
+          </VaInput>
+        </div>
+        <VaButton @click="showAddUserModal">Add User</VaButton>
+      </div>
+
+      <UsersTable
+        v-model:sort-by="sorting.sortBy"
+        v-model:sorting-order="sorting.sortingOrder"
+        :users="users"
+        :loading="isLoading"
+        :pagination="pagination"
+        @edit-user="showEditUserModal"
+        @delete-user="onUserDelete"
+      />
+    </VaCardContent>
+  </VaCard>
+
+  <VaModal
+    v-slot="{ cancel, ok }"
+    v-model="doShowEditUserModal"
+    size="small"
+    mobile-fullscreen
+    close-button
+    hide-default-actions
+    :before-cancel="beforeEditFormModalClose"
+  >
+    <h1 class="va-h5">{{ userToEdit ? 'Edit user' : 'Add user' }}</h1>
+    <EditUserForm
+      ref="editFormRef"
+      :user="userToEdit"
+      :save-button-label="userToEdit ? 'Save' : 'Add'"
+      @close="cancel"
+      @save="onUserSaved"
+    />
+  </VaModal>
+</template>
+
 <script setup lang="ts">
 import { ref } from 'vue';
 import UsersTable from './widgets/UsersTable.vue';
@@ -94,51 +142,3 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
   }
 };
 </script>
-
-<template>
-  <h1 class="page-title">Users</h1>
-
-  <VaCard>
-    <VaCardContent>
-      <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
-        <div class="flex flex-col md:flex-row gap-2 justify-start">
-          <VaInput v-model="filters.search" placeholder="Search">
-            <template #prependInner>
-              <VaIcon name="search" color="secondary" size="small" />
-            </template>
-          </VaInput>
-        </div>
-        <VaButton @click="showAddUserModal">Add User</VaButton>
-      </div>
-
-      <UsersTable
-        v-model:sort-by="sorting.sortBy"
-        v-model:sorting-order="sorting.sortingOrder"
-        :users="users"
-        :loading="isLoading"
-        :pagination="pagination"
-        @edit-user="showEditUserModal"
-        @delete-user="onUserDelete"
-      />
-    </VaCardContent>
-  </VaCard>
-
-  <VaModal
-    v-slot="{ cancel, ok }"
-    v-model="doShowEditUserModal"
-    size="small"
-    mobile-fullscreen
-    close-button
-    hide-default-actions
-    :before-cancel="beforeEditFormModalClose"
-  >
-    <h1 class="va-h5">{{ userToEdit ? 'Edit user' : 'Add user' }}</h1>
-    <EditUserForm
-      ref="editFormRef"
-      :user="userToEdit"
-      :save-button-label="userToEdit ? 'Save' : 'Add'"
-      @close="cancel"
-      @save="onUserSaved"
-    />
-  </VaModal>
-</template>

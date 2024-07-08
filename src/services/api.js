@@ -46,13 +46,16 @@ export const logout = async () => {
 
 export const getUsers = async (filters) => {
   try {
+    console.log('Sending request to API with filters:', filters);
     const response = await api.get('/user', { params: filters });
+    console.log('Response from API:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching users:', error);
     throw error;
   }
 };
+
 
 export const addUser = async (user) => {
   try {
