@@ -64,12 +64,12 @@ export const addUser = async (user) => {
   }
 };
 
-export const updateUser = async (user) => {
+export const updateUser = async (userId, userData) => {
   try {
-    if (!user.id) {
+    if (!userId) {
       throw new Error('User ID is required for update');
     }
-    const response = await api.put(`/user/${user.id}`, user);
+    const response = await api.put(`/user/${userId}`, userData);
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);

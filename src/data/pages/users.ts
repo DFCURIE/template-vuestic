@@ -49,23 +49,18 @@ export const addUser = async (user: User) => {
     notes: user.notes,
   };
 
-  console.log('Data to be sent to API:', formattedUser);
-
+  console.log('Data to be sent to API for new user:', formattedUser);
   await addUserToAPI(formattedUser);
 };
 
-export const updateUser = async (user: Partial<User>) => {
+export const updateUser = async (user: { id: string, level: string }) => {
   const updateData = {
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
     level: {
       id: user.level
-    },
-    notes: user.notes
+    }
   };
-  await updateUserInAPI(updateData);
+  console.log('Data to be sent to API for user update:', updateData);
+  await updateUserInAPI(user.id, updateData);
 };
 
 export const removeUser = async (userId: string) => {

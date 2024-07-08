@@ -13,7 +13,7 @@ const { users, isLoading, filters, sorting, pagination, fetch, add, update, remo
 const userToEdit = ref<User | null>(null);
 
 const showEditUserModal = (user: User) => {
-  userToEdit.value = user;
+  userToEdit.value = { ...user, id: user.userId || user.id };
   doShowEditUserModal.value = true;
 };
 
@@ -27,18 +27,10 @@ const { init: notify } = useToast();
 const onUserSaved = async (user: User) => {
   try {
     if (user.id) {
-      // Update existing user
-      const updateData = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        level: { id: user.level },
-        notes: user.notes
-      };
-      await update(updateData);
+      // Update existing user's level
+      await update(user);
       notify({
-        message: `${user.firstName} ${user.lastName} has been updated`,
+        message: `User level has been updated`,
         color: 'success',
       });
     } else {
@@ -62,8 +54,7 @@ const onUserSaved = async (user: User) => {
 
 const onUserDelete = async (user: User) => {
   console.log('User to be deleted:', user);
-  // Ensure the correct ID property is used
-  const userId = user.id || user.userId || user._id;
+  const userId = user.userId || user.id;
   if (userId) {
     try {
       await remove(userId);
@@ -80,7 +71,7 @@ const onUserDelete = async (user: User) => {
       });
     }
   } else {
-    console.error('Invalid user ID for delete in UsersPage:', user);
+    console.error('Invalid user ID for delete in UsersPage:', userId);
   }
 };
 

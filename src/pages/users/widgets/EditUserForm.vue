@@ -18,19 +18,18 @@ const props = defineProps({
 
 const defaultNewUser: User = {
   id: undefined,
-  fullname: '',
-  level: '',
-  username: '',
-  notes: '',
-  email: '',
-  active: true,
-  projects: [],
-  password: '',
+  userId: undefined,
   firstName: '',
   lastName: '',
+  email: '',
+  level: '',
+  notes: '',
+  password: '',
 };
 
 const newUser = ref<User>({ ...defaultNewUser });
+
+const isEditMode = computed(() => !!props.user?.userId || !!props.user?.id);
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
@@ -45,40 +44,26 @@ defineExpose({
   isFormHasUnsavedChanges,
 });
 
-watch(
-  () => props.user,
-  () => {
-    if (!props.user) {
-      newUser.value = { ...defaultNewUser };
-      return;
-    }
+watch(() => props.user, () => {
+  if (props.user) {
+    newUser.value = { ...props.user };
+  } else {
+    newUser.value = { ...defaultNewUser };
+  }
+}, { immediate: true });
 
-    newUser.value = {
-      ...props.user,
-    };
-  },
-  { immediate: true },
-);
-
-const form = useForm('add-user-form');
+const form = useForm('user-form');
 
 const emit = defineEmits(['close', 'save']);
 
 const onSave = () => {
   if (form.validate()) {
-    const userToSave = {
-      id: newUser.value.id,
-      firstName: newUser.value.firstName,
-      lastName: newUser.value.lastName,
-      email: newUser.value.email,
-      level: newUser.value.level,
-      notes: newUser.value.notes,
-    };
-
-    if (!userToSave.id) {
-      // Hanya tambahkan password untuk user baru
-      userToSave.password = newUser.value.password;
-    }
+    const userToSave = isEditMode.value
+      ? { 
+          id: newUser.value.userId || newUser.value.id, 
+          level: newUser.value.level 
+        }
+      : { ...newUser.value };
 
     console.log('Data to be saved:', userToSave);
     emit('save', userToSave);
@@ -103,40 +88,54 @@ fetchLevels();
 </script>
 
 <template>
-  <VaForm v-slot="{ isValid }" ref="add-user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
+  <VaForm v-slot="{ isValid }" ref="user-form" class="flex-col justify-start items-start gap-4 inline-flex w-full">
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
-      <div class="flex gap-4 flex-col sm:flex-row w-full">
-        <VaInput
-          v-model="newUser.email"
-          label="Email"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required, validators.email]"
-          name="email"
-          autocomplete="off"
-        />
-        <VaInput
-          v-model="newUser.lastName"
-          label="Last Name"
-          class="w-full sm:w-1/2"
-          :rules="[validators.required]"
-          name="lastName"
-          autocomplete="off"
-        />
-      </div>
-
-      <div class="flex gap-4 w-full">
-        <div class="w-1/2">
+      <template v-if="!isEditMode">
+        <div class="flex gap-4 flex-col sm:flex-row w-full">
           <VaInput
-            v-model="newUser.firstName"
-            label="First Name"
-            class="w-full"
+            v-model="newUser.email"
+            label="Email"
+            class="w-full sm:w-1/2"
+            :rules="[validators.required, validators.email]"
+            name="email"
+            autocomplete="off"
+          />
+          <VaInput
+            v-model="newUser.lastName"
+            label="Last Name"
+            class="w-full sm:w-1/2"
             :rules="[validators.required]"
-            name="firstName"
+            name="lastName"
             autocomplete="off"
           />
         </div>
-      </div>
-
+        <div class="flex gap-4 w-full">
+          <div class="w-1/2">
+            <VaInput
+              v-model="newUser.firstName"
+              label="First Name"
+              class="w-full"
+              :rules="[validators.required]"
+              name="firstName"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="flex gap-4 w-full">
+          <div class="w-1/2">
+            <VaInput
+              v-model="newUser.password"
+              label="Password"
+              type="password"
+              class="w-full"
+              :rules="[validators.required]"
+              name="password"
+              autocomplete="new-password"
+            />
+          </div>
+        </div>
+      </template>
+      
       <div class="flex gap-4 w-full">
         <div class="w-1/2">
           <VaSelect
@@ -152,21 +151,7 @@ fetchLevels();
         </div>
       </div>
 
-      <div class="flex gap-4 w-full" v-if="!newUser.id">
-      <div class="w-1/2">
-        <VaInput
-          v-model="newUser.password"
-          label="Password"
-          type="password"
-          class="w-full"
-          :rules="[validators.required]"
-          name="password"
-          autocomplete="new-password"
-        />
-      </div>
-    </div>
-
-      <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
+      <VaTextarea v-if="!isEditMode" v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
         <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
