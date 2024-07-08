@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { PropType, computed, ref, watch } from 'vue';
-import { useForm } from 'vuestic-ui';
+import { PropType, computed, ref, watch, onMounted } from 'vue';
+import { useForm, defineVaDataTableColumns } from 'vuestic-ui';
 import { User } from '../types';
 import { validators } from '../../../services/utils';
 import { getLevels } from '../../../data/pages/users';
+import { usePermissions, Permission } from '../composables/usePermissions';
 
 const props = defineProps({
   user: {
@@ -32,9 +33,6 @@ const isEditMode = computed(() => !!props.user?.userId || !!props.user?.id);
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
-    if (key === 'projects') {
-      return false;
-    }
     return newUser.value[key as keyof User] !== (props.user ?? defaultNewUser)?.[key as keyof User];
   });
 });
@@ -55,14 +53,36 @@ const form = useForm('user-form');
 
 const emit = defineEmits(['close', 'save']);
 
+const { permissions, isLoading: isLoadingPermissions, fetchPermissions } = usePermissions();
+
+const permissionColumns = defineVaDataTableColumns([
+  { key: 'level.name', label: 'Level' },
+  { key: 'isGet', label: 'Read' },
+  { key: 'isPost', label: 'Write' },
+  { key: 'isPut', label: 'Update' },
+  { key: 'isDelete', label: 'Delete' },
+]);
+
+onMounted(async () => {
+  await fetchPermissions();
+});
+
 const onSave = () => {
   if (form.validate()) {
     const userToSave = isEditMode.value
       ? { 
           id: newUser.value.userId || newUser.value.id, 
-          level: newUser.value.level 
+          level: newUser.value.level,
+          permissions: permissions.value.find(p => p.level.id === newUser.value.level)
         }
-      : { ...newUser.value };
+      : { 
+          firstName: newUser.value.firstName,
+          lastName: newUser.value.lastName,
+          email: newUser.value.email,
+          password: newUser.value.password,
+          level: newUser.value.level,
+          permissions: permissions.value.find(p => p.level.id === newUser.value.level)
+        };
 
     console.log('Data to be saved:', userToSave);
     emit('save', userToSave);
@@ -139,6 +159,24 @@ fetchLevels();
         value-by="value"
         text-by="text"
       />
+
+      <div v-if="permissions.length > 0" class="w-full mt-4">
+        <h3 class="va-h6 mb-2">Level Permissions</h3>
+        <VaDataTable :items="permissions" :columns="permissionColumns">
+          <template #cell(isGet)="{ rowData }">
+            <VaCheckbox v-model="rowData.isGet" :true-value="'Y'" :false-value="'N'" disabled />
+          </template>
+          <template #cell(isPost)="{ rowData }">
+            <VaCheckbox v-model="rowData.isPost" :true-value="'Y'" :false-value="'N'" disabled />
+          </template>
+          <template #cell(isPut)="{ rowData }">
+            <VaCheckbox v-model="rowData.isPut" :true-value="'Y'" :false-value="'N'" disabled />
+          </template>
+          <template #cell(isDelete)="{ rowData }">
+            <VaCheckbox v-model="rowData.isDelete" :true-value="'Y'" :false-value="'N'" disabled />
+          </template>
+        </VaDataTable>
+      </div>
 
       <div class="flex flex-wrap justify-end gap-4 w-full">
         <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>

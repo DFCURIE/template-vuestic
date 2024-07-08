@@ -1,9 +1,12 @@
-export type UserRole = 'superadmin' | 'admin' | 'member' | 'user'
-
 export type User = {
-  id: number
+  id?: number | string
+  userId?: string
+  firstName: string
+  lastName: string
   email: string
-  role: UserRole
-  avatar: string
-  notes: string
+  password?: string
+  level: string
+  role?: UserRole
 }
+
+export type UserRole = 'superadmin' | 'admin' | 'member' | 'user'

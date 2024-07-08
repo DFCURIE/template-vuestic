@@ -145,3 +145,33 @@ export const getLevelById = async (levelId) => {
     throw error;
   }
 };
+
+export const getPermission = async () => {
+  try {
+    const response = await api.get('/permission')
+    return response.data
+  } catch (error) {
+    console.error('Error fetching permissions:', error)
+    throw error
+  }
+};
+
+export const newPermission = async (permissionData) => {
+  try {
+    const response = await api.post('/permission', permissionData)
+    return response.data
+  } catch (error) {
+    console.error('Error adding new permission:', error)
+    throw error
+  }
+};
+
+export const updatePermission = async (permissionData) => {
+  try {
+    const response = await api.put('/permission', permissionData)
+    return response.data
+  } catch (error) {
+    console.error('Error updating permission:', error)
+    throw error
+  }
+};

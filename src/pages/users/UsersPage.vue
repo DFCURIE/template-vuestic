@@ -52,11 +52,13 @@ import UsersTable from './widgets/UsersTable.vue';
 import EditUserForm from './widgets/EditUserForm.vue';
 import { User } from './types';
 import { useUsers } from './composables/useUsers';
+import { usePermissions } from './composables/usePermissions';
 import { useModal, useToast } from 'vuestic-ui';
 
 const doShowEditUserModal = ref(false);
 
 const { users, isLoading, filters, sorting, pagination, fetch, add, update, remove } = useUsers();
+const { permissions, isLoading: isLoadingPermissions, fetchPermissions } = usePermissions();
 
 const userToEdit = ref<User | null>(null);
 
@@ -72,7 +74,7 @@ const showAddUserModal = () => {
 
 const { init: notify } = useToast();
 
-const onUserSaved = async (user: User) => {
+const onUserSaved = async (user: User & { permissions?: any }) => {
   try {
     if (user.id) {
       // Update existing user's level
